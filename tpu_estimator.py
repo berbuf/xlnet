@@ -31,7 +31,7 @@ import six
 from six.moves import queue as Queue  # pylint: disable=redefined-builtin
 from six.moves import xrange  # pylint: disable=redefined-builtin
 
-from tensorflow.contrib.tpu.proto import compilation_result_pb2 as tpu_compilation_result
+#from tensorflow.contrib.tpu.proto import compilation_result_pb2 as tpu_compilation_result
 from tensorflow.contrib.tpu.python.tpu import tensor_tracer
 from tensorflow.contrib.tpu.python.ops import tpu_ops
 from tensorflow.contrib.tpu.python.tpu import error_handling
