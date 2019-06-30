@@ -8,19 +8,19 @@ import tensorflow as tf
 import modeling
 
 
-def _get_initializer(FLAGS):
+def _get_initializer(PFLAGS):
   """Get variable intializer."""
-  if FLAGS.init == "uniform":
+  if PFLAGS.init == "uniform":
     initializer = tf.initializers.random_uniform(
-        minval=-FLAGS.init_range,
-        maxval=FLAGS.init_range,
+        minval=-PFLAGS.init_range,
+        maxval=PFLAGS.init_range,
         seed=None)
-  elif FLAGS.init == "normal":
+  elif PFLAGS.init == "normal":
     initializer = tf.initializers.random_normal(
-        stddev=FLAGS.init_std,
+        stddev=PFLAGS.init_std,
         seed=None)
   else:
-    raise ValueError("Initializer {} not supported".format(FLAGS.init))
+    raise ValueError("Initializer {} not supported".format(PFLAGS.init))
   return initializer
 
 
@@ -40,24 +40,24 @@ class XLNetConfig(object):
     n_token: int, the vocab size.
   """
 
-  def __init__(self, FLAGS=None, json_path=None):
+  def __init__(self, PFLAGS=None, json_path=None):
     """Constructing an XLNetConfig.
-    One of FLAGS or json_path should be provided."""
+    One of PFLAGS or json_path should be provided."""
 
-    assert FLAGS is not None or json_path is not None
+    assert PFLAGS is not None or json_path is not None
 
     self.keys = ["n_layer", "d_model", "n_head", "d_head", "d_inner",
                  "ff_activation", "untie_r", "n_token"]
 
-    if FLAGS is not None:
-      self.init_from_flags(FLAGS)
+    if PFLAGS is not None:
+      self.init_from_PFLAGS(PFLAGS)
 
     if json_path is not None:
       self.init_from_json(json_path)
 
-  def init_from_flags(self, FLAGS):
+  def init_from_PFLAGS(self, PFLAGS):
     for key in self.keys:
-      setattr(self, key, getattr(FLAGS, key))
+      setattr(self, key, getattr(PFLAGS, key))
 
   def init_from_json(self, json_path):
     with tf.gfile.Open(json_path) as f:
@@ -78,25 +78,25 @@ class XLNetConfig(object):
       json.dump(json_data, f, indent=4, sort_keys=True)
 
 
-def create_run_config(is_training, is_finetune, FLAGS):
+def create_run_config(is_training, is_finetune, PFLAGS):
   kwargs = dict(
       is_training=is_training,
-      use_tpu=FLAGS.use_tpu,
-      use_bfloat16=FLAGS.use_bfloat16,
-      dropout=FLAGS.dropout,
-      dropatt=FLAGS.dropatt,
-      init=FLAGS.init,
-      init_range=FLAGS.init_range,
-      init_std=FLAGS.init_std,
-      clamp_len=FLAGS.clamp_len)
+      use_tpu=PFLAGS.use_tpu,
+      use_bfloat16=PFLAGS.use_bfloat16,
+      dropout=PFLAGS.dropout,
+      dropatt=PFLAGS.dropatt,
+      init=PFLAGS.init,
+      init_range=PFLAGS.init_range,
+      init_std=PFLAGS.init_std,
+      clamp_len=PFLAGS.clamp_len)
 
   if not is_finetune:
     kwargs.update(dict(
-        mem_len=FLAGS.mem_len,
-        reuse_len=FLAGS.reuse_len,
-        bi_data=FLAGS.bi_data,
-        clamp_len=FLAGS.clamp_len,
-        same_length=FLAGS.same_length))
+        mem_len=PFLAGS.mem_len,
+        reuse_len=PFLAGS.reuse_len,
+        bi_data=PFLAGS.bi_data,
+        clamp_len=PFLAGS.clamp_len,
+        same_length=PFLAGS.same_length))
 
   return RunConfig(**kwargs)
 
